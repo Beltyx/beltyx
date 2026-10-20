@@ -1,0 +1,48 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Your BELTYX shopping bag."><link rel="manifest" href="manifest.webmanifest"><title>Your Bag — BELTYX</title><link rel="stylesheet" href="style.css?v=30260927abc"><script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="cloud.js"></script><script src="whatsapp.js"></script><script src="storefront.js?v=20261019-cny-jpy-zoomfix"></script><link rel="stylesheet" href="motion.css?v=3"><script src="motion.js?v=3" defer></script></head><body><header class="site-header"><a class="brand" href="index.html"><img src="assets/beltyx-logo.svg" alt="BELTYX"><span><strong>BELTYX</strong><small>LEATHER GOODS</small></span></a><nav class="site-nav" id="siteNav"><a href="index.html">Home</a><a href="shop.html">Shop</a><a href="collections.html">Collections</a><a href="customize.html">Customize</a><a href="about.html">Our Story</a><a href="reviews.html">Reviews</a><a href="contact.html">Contact</a></nav><div class="header-actions"><button class="icon-button menu-toggle" id="menuToggle">☰</button></div></header><main><section class="page-hero"><div><p class="eyebrow">YOUR BELTYX BAG</p><h1>Ready when you are.</h1><p>Review your pieces, then send your order details securely through WhatsApp.</p></div></section><section class="section"><div id="cartPage"></div></section></main><footer class="footer"><div class="footer-grid"><div><div class="footer-brand">BELTYX</div><p>Leather, Made to Last.</p></div><div><h4>Explore</h4><a href="shop.html">Shop</a><a href="collections.html">Collections</a></div><div><h4>Help</h4><a href="about.html">Our Story</a><a href="contact.html">Contact</a></div><div><h4>Contact</h4><a data-whatsapp href="https://wa.me/923174960570">WhatsApp</a></div></div><div class="footer-bottom"><span>© <span data-year></span> BELTYX</span></div></footer><div class="toast" id="toast"></div><script>
+function drawCart(){
+  const c=ABC.cartGet(), ps=ABC.PRODUCTS(), rows=c.map(i=>({...i,p:ps.find(p=>Number(p.id)===Number(i.id))})).filter(x=>x.p);
+  const root=document.getElementById('cartPage');
+  if(!rows.length){root.innerHTML='<div class="empty"><h2 style="font:500 38px Playfair Display,serif">Your bag is empty.</h2><p>There is nothing here yet.</p><a class="btn btn-light" style="background:#171410;color:#fff" href="shop.html">Explore the collection</a></div>';return}
+  const total=rows.reduce((s,x)=>s+ABC.effectivePricePKR(x.p)*x.qty,0);
+  root.innerHTML=`<div class="cart-layout"><div class="cart-items-panel"><div class="cart-items-list">${rows.map(x=>`<article class="cart-item"><img src="${ABC.esc(ABC.img(x.p))}" alt="${ABC.esc(x.p.name)}"><div class="cart-item-copy"><p class="eyebrow">${ABC.esc(x.p.category)}</p><h4>${ABC.esc(x.p.name)}</h4><p>${ABC.priceHTML(x.p)}</p><div class="qty"><button type="button" onclick="change(${x.p.id},-1)">−</button><input value="${x.qty}" type="number" min="1" onchange="setQ(${x.p.id},this.value)"><button type="button" onclick="change(${x.p.id},1)">+</button></div></div><button class="cart-remove" type="button" onclick="removeI(${x.p.id})">Remove</button></article>`).join('')}</div><div class="cart-summary"><span>Subtotal</span><strong>${ABC.moneyPKR(total)}</strong></div></div><aside class="checkout-panel" id="checkoutPanel"><div><p class="eyebrow">SECURE YOUR ORDER</p><h2>Continue to order</h2><p>Fill in your delivery details below. We’ll save the order to the cloud and then open WhatsApp with the complete order summary.</p></div><form id="orderForm" class="order-form"><label>Full name *<input name="name" autocomplete="name" required></label><label>WhatsApp / contact number *<input name="phone" inputmode="tel" autocomplete="tel" required></label><label>Email <span>(optional)</span><input name="email" type="email" autocomplete="email"></label><label>City *<input name="city" autocomplete="address-level2" required></label><label class="wide">Complete delivery address *<textarea name="address" rows="4" autocomplete="street-address" required></textarea></label><label>Postal code <span>(optional)</span><input name="postal_code" autocomplete="postal-code"></label><label>Order notes <span>(optional)</span><textarea name="notes" rows="3" placeholder="Any delivery instructions?"></textarea><div class="order-total-row wide"><span>Total</span><strong>${ABC.moneyPKR(total)}</strong></div><div id="orderError" class="form-error wide" role="alert"></div><button class="btn btn-light wide" type="submit" id="placeOrderBtn">Place Order &amp; continue on WhatsApp</button></form></aside></div>`;
+  document.getElementById('orderForm').addEventListener('submit',submitOrder);window.addEventListener('abc-rates-updated',()=>{drawCart()});
+}
+function change(id,d){const c=ABC.cartGet(),x=c.find(i=>Number(i.id)===Number(id));if(x)x.qty=Math.max(1,x.qty+d);ABC.cartSet(c);drawCart()}
+function setQ(id,v){const c=ABC.cartGet(),x=c.find(i=>Number(i.id)===Number(id));if(x)x.qty=Math.max(1,Math.floor(Number(v)||1));ABC.cartSet(c);drawCart()}
+function removeI(id){ABC.cartSet(ABC.cartGet().filter(i=>Number(i.id)!==Number(id)));drawCart()}
+async function submitOrder(e){
+  e.preventDefault();
+  const form=e.currentTarget, btn=document.getElementById('placeOrderBtn'), err=document.getElementById('orderError');
+  err.textContent='';err.classList.remove('show');btn.disabled=true;btn.textContent='Saving your order…';
+  const c=ABC.cartGet(), ps=ABC.PRODUCTS(), rows=c.map(i=>({...i,p:ps.find(p=>Number(p.id)===Number(i.id))})).filter(x=>x.p);
+  if(!rows.length){err.textContent='Your bag is empty.';err.classList.add('show');btn.disabled=false;btn.textContent='Place Order & continue on WhatsApp';return}
+  const data=Object.fromEntries(new FormData(form).entries());
+  const total=rows.reduce((s,x)=>s+ABC.effectivePricePKR(x.p)*x.qty,0);
+  const items=rows.map(x=>({id:x.p.id,name:x.p.name,qty:x.qty,price:x.p.price,image:ABC.img(x.p)}));
+  const order={customer_name:data.name.trim(),phone:data.phone.trim(),email:data.email?.trim()||null,city:data.city.trim(),address:data.address.trim(),postal_code:data.postal_code?.trim()||null,notes:data.notes?.trim()||null,payment_method:'WhatsApp / to be confirmed',items,total,status:'New'};
+  try{
+    let saved=false;
+    if(window.ABC_DB){
+      const rpc=await window.ABC_DB.rpc('create_public_order',{p_customer_name:order.customer_name,p_phone:order.phone,p_city:order.city,p_address:order.address,p_email:order.email,p_postal_code:order.postal_code,p_notes:order.notes,p_payment_method:order.payment_method,p_items:order.items,p_total:order.total});
+      if(!rpc.error){saved=true}
+      else {
+        const direct=await window.ABC_DB.from('orders').insert(order);
+        if(!direct.error)saved=true; else throw new Error(direct.error.message||rpc.error.message);
+      }
+    }
+    if(!saved && !window.ABC_DB) throw new Error('Cloud connection is unavailable. Please contact us on WhatsApp.');
+    if(window.ABC_DB&&ABC.visitorId){try{await window.ABC_DB.rpc('link_abc_customer_activity',{p_visitor_id:ABC.visitorId(),p_customer_name:order.customer_name,p_contact:order.phone})}catch(e){console.warn('activity customer link',e)}}
+    const msg=['BELTYX — NEW ORDER','',`Name: ${order.customer_name}`,`Contact: ${order.phone}`,order.email?`Email: ${order.email}`:null,`City: ${order.city}`,`Address: ${order.address}`,order.postal_code?`Postal code: ${order.postal_code}`:null,order.notes?`Notes: ${order.notes}`:null,'','ITEMS',...rows.map(x=>`${x.p.name} × ${x.qty} — ${ABC.money(ABC.convertedValue(x.p,ABC.effectivePricePKR(x.p)),x.p)}\nProduct link: ${new URL(`product.html?id=${encodeURIComponent(x.p.id)}`,window.location.href).href}`),'',`TOTAL: ${ABC.moneyPKR(total)}`].filter(Boolean).join('\n');
+    const waMap=(window.ABC?.SETTINGS?.()||{}).productWhatsapps||{};
+    const targetNumber=String(waMap[String(rows[0].p.id)]||((window.ABC?.SETTINGS?.()||{}).whatsapp)||'923174960570').replace(/\D/g,'');
+    if(!targetNumber){throw new Error('This product does not have a WhatsApp number assigned. Please contact the store.')}
+    const waUrl=`https://wa.me/${targetNumber}?text=${encodeURIComponent(msg)}`;
+    window.location.href=waUrl;
+    ABC.cartSet([]);drawCart();
+    ABC.toast('Order saved. Opening the product WhatsApp number…');
+  }catch(ex){
+    console.error('Order save failed',ex);err.textContent='We could not save this order to the cloud. Please check your connection and try again.';err.classList.add('show');btn.disabled=false;btn.textContent='Place Order & continue on WhatsApp';
+  }
+}
+document.addEventListener('beltyx-ready',drawCart);
+</script></body></html>

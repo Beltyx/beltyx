@@ -1,0 +1,111 @@
+
+:root{--mo-gold:212,175,106;--mo-ease:cubic-bezier(.2,.7,.1,1)}
+
+.mo-on body{animation:moPage .7s ease both}
+.mo-on body.mo-leave{opacity:0;transition:opacity .22s ease}
+@keyframes moPage{from{opacity:0}to{opacity:1}}
+
+.mo-progress{position:fixed;left:0;top:0;height:2px;width:100%;z-index:1200;pointer-events:none;
+  background:linear-gradient(90deg,#8d6a2f,#f3dc9a,#d4af6a);transform-origin:0 50%;transform:scaleX(0);box-shadow:0 0 10px rgba(var(--mo-gold),.6)}
+
+.hero{position:relative}
+.mo-up{animation:moUp .9s var(--mo-ease) both;animation-delay:var(--mo-delay,.2s)}
+@keyframes moUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.hero-visual img{animation:moZoom 1.7s var(--mo-ease) both,moFloat 9s ease-in-out 1.7s infinite alternate;will-change:transform}
+@keyframes moZoom{from{opacity:0;transform:scale(1.12)}to{opacity:1;transform:none}}
+@keyframes moFloat{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(0,-9px,0) scale(1.018)}}
+.mo-dust{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:.9}
+
+.mo-rev{opacity:0;transform:translateY(30px)}
+.mo-rev.product-card{transform:translate3d(var(--dx,0),40px,0) scale(.94)}
+.mo-rev.mo-in{opacity:1;transform:none;transition:opacity .85s ease var(--d,0s),transform .95s var(--mo-ease) var(--d,0s)}
+
+.section-head h2::after,.manifesto-copy h2::after{content:"";display:block;width:0;height:1px;margin-top:16px;background:linear-gradient(90deg,rgb(var(--mo-gold)),transparent);transition:width 1.3s var(--mo-ease) .25s}
+.section-head.mo-in h2::after,.manifesto-copy h2.mo-in::after{width:96px}
+
+.btn,.hero-link{position:relative;overflow:hidden}
+.btn::before{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg)}
+.btn:hover::before{animation:moSweep .9s ease}
+@keyframes moSweep{from{left:-70%}to{left:130%}}
+.btn:active,.icon-button:active,.carousel-control:active{transform:scale(.97)}
+
+@media (min-width:901px){
+  .site-nav a{position:relative}
+  .site-nav a::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;background:rgb(var(--mo-gold));transform:scaleX(0);transform-origin:left;transition:transform .45s var(--mo-ease)}
+  .site-nav a:hover::after{transform:scaleX(1)}
+}
+
+@media (hover:hover){
+  .product-card:hover{box-shadow:0 22px 55px rgba(0,0,0,.5),0 0 0 1px rgba(var(--mo-gold),.35)}
+  .product-card{transition:transform .55s var(--mo-ease),box-shadow .55s ease}
+  .mini-add{transition:letter-spacing .3s ease,color .3s ease}
+  .product-card:hover .mini-add{letter-spacing:.2em}
+}
+.product-card:active{transform:scale(.985)}
+
+.mo-band{overflow:hidden;white-space:nowrap;border-top:1px solid rgba(var(--mo-gold),.28);border-bottom:1px solid rgba(var(--mo-gold),.28);background:#0b0805;padding:15px 0}
+.mo-band-track{display:inline-flex;align-items:center;gap:34px;animation:moBand 34s linear infinite;will-change:transform}
+.mo-band span{font:600 10px/1 'Inter',system-ui,sans-serif;letter-spacing:.34em;color:#d9b46f;text-transform:uppercase}
+.mo-band i{width:6px;height:6px;background:rgb(var(--mo-gold));transform:rotate(45deg);display:inline-block;opacity:.8}
+@keyframes moBand{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.mo-glow{position:fixed;left:0;top:0;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;pointer-events:none;z-index:2;opacity:0;
+  background:radial-gradient(circle,rgba(var(--mo-gold),.13) 0%,rgba(var(--mo-gold),.05) 40%,transparent 70%);mix-blend-mode:screen;transition:opacity .6s ease;will-change:transform}
+.mo-glow.on{opacity:1}
+
+.whatsapp-float{animation:moPulse 3.2s ease-out 2s infinite}
+@keyframes moPulse{0%{box-shadow:0 0 0 1.5px rgba(20,14,4,.75),0 0 0 0 rgba(var(--mo-gold),.55)}70%,100%{box-shadow:0 0 0 1.5px rgba(20,14,4,.75),0 0 0 18px rgba(var(--mo-gold),0)}}
+
+@media (prefers-reduced-motion:reduce){
+  .mo-on body,.mo-up,.hero-visual img,.mo-band-track,.whatsapp-float,.mo-beam,.mo-halo{animation:none!important}
+  .mo-w{animation:none!important;-webkit-text-fill-color:currentColor!important;background:none!important;-webkit-text-stroke-width:0!important}
+  .mo-rev{opacity:1!important;transform:none!important}
+}
+
+.hero{--T:11s}
+.hero h1{position:relative;isolation:isolate}
+.mo-line{display:block}
+.mo-w{display:inline-block;transform-origin:50% 60%;
+  --hi:#fff6d6;--sw:.8px;
+  -webkit-text-fill-color:transparent;-webkit-background-clip:text;background-clip:text;
+  background-image:linear-gradient(100deg,currentColor 0 41%,var(--hi) 50%,currentColor 59% 100%);
+  background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
+  -webkit-text-stroke:0 var(--hi);
+  animation:var(--mo-in,moT0) var(--T) ease var(--wd,0s) infinite backwards,moGlint var(--T) linear var(--wd,0s) infinite}
+.hero h1 em{font-style:italic;color:#cfa65a}
+.hero h1 em .mo-w{--hi:#fff1bd}
+.mo-w.mo-s{--sw:.35px}
+.mo-t0{--mo-in:moT0}.mo-t1{--mo-in:moT1}.mo-t2{--mo-in:moT2;transform-origin:50% 0}.mo-t3{--mo-in:moT3}.mo-t4{--mo-in:moT4}.mo-t5{--mo-in:moT5}
+@keyframes moT0{0%{opacity:0;transform:translateY(70%) perspective(700px) rotateX(-100deg)}9%{opacity:1}18%,88%{opacity:1;transform:none}95%,100%{opacity:0;transform:translateY(-45%) perspective(700px) rotateX(85deg)}100%{transform:translateY(70%) perspective(700px) rotateX(-100deg)}}
+@keyframes moT1{0%{opacity:0;transform:rotate(-540deg) scale(.05)}12%{opacity:1}18%,88%{opacity:1;transform:none}95%{opacity:0;transform:rotate(240deg) scale(.1)}100%{opacity:0;transform:rotate(-540deg) scale(.05)}}
+@keyframes moT2{0%{opacity:0;transform:translateY(-110%) rotate(-40deg)}7%{opacity:1;transform:translateY(0) rotate(16deg)}11%{transform:rotate(-9deg)}14.5%{transform:rotate(4deg)}18%,88%{opacity:1;transform:none}95%{opacity:0;transform:translateY(60%) rotate(25deg)}100%{opacity:0;transform:translateY(-110%) rotate(-40deg)}}
+@keyframes moT3{0%{opacity:0;transform:perspective(700px) rotateY(-180deg) scale(.5)}18%,88%{opacity:1;transform:none}95%{opacity:0;transform:perspective(700px) rotateY(180deg) scale(.5)}100%{opacity:0;transform:perspective(700px) rotateY(-180deg) scale(.5)}}
+@keyframes moT4{0%{opacity:0;transform:translateX(-110px) skewX(28deg)}11%{opacity:1;transform:translateX(9px) skewX(-7deg)}18%,88%{opacity:1;transform:none}95%{opacity:0;transform:translateX(110px) skewX(-28deg)}100%{opacity:0;transform:translateX(-110px) skewX(28deg)}}
+@keyframes moT5{0%{opacity:0;transform:scale(2.6);filter:blur(12px)}18%,88%{opacity:1;transform:none;filter:blur(0)}95%{opacity:0;transform:scale(.4);filter:blur(8px)}100%{opacity:0;transform:scale(2.6);filter:blur(12px)}}
+
+@keyframes moGlint{0%,33%{background-position:100% 0;-webkit-text-stroke-width:0}
+  38%{-webkit-text-stroke-width:var(--sw)}
+  52%{background-position:0% 0}
+  60%{background-position:0% 0;-webkit-text-stroke-width:var(--sw)}
+  67%,100%{background-position:0% 0;-webkit-text-stroke-width:0}}
+.mo-halo{position:absolute;inset:-22% -10%;z-index:-1;pointer-events:none;opacity:0;
+  background:radial-gradient(ellipse at 38% 52%,rgba(244,205,120,.34),rgba(244,205,120,.1) 45%,transparent 70%);
+  animation:moHalo var(--T) ease-in-out .45s infinite}
+@keyframes moHalo{0%,32%{opacity:0}42%,57%{opacity:1}68%,100%{opacity:0}}
+
+.mo-beam{position:absolute;top:-20%;bottom:-20%;left:0;width:34%;z-index:1;pointer-events:none;opacity:.0;
+  background:linear-gradient(100deg,transparent,rgba(255,236,170,.16) 45%,rgba(255,244,205,.28) 50%,rgba(255,236,170,.16) 55%,transparent);
+  transform:translateX(-140%) skewX(-18deg);animation:moBeam 9s ease-in-out 2.2s infinite}
+@keyframes moBeam{0%{transform:translateX(-140%) skewX(-18deg);opacity:0}8%{opacity:1}45%{transform:translateX(330%) skewX(-18deg);opacity:1}52%,100%{transform:translateX(330%) skewX(-18deg);opacity:0}}
+.hero-visual img{translate:0 var(--py,0px)}
+.icon-button,.carousel-control{position:relative;overflow:hidden}
+.mo-ripple{position:absolute;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(255,232,160,.75),rgba(var(--mo-gold),.25) 55%,transparent 70%);transform:scale(0);animation:moRip .7s ease-out forwards}
+@keyframes moRip{to{transform:scale(1);opacity:0}}
+@media (max-width:700px){
+  .mo-band{padding:17px 0}.mo-band span{font-size:11px}
+  .mo-glow{width:380px;height:380px;margin:-190px 0 0 -190px}
+}
+
+body:not(.admin-body) .whatsapp-float.mo-float{left:0!important;top:0!important;right:auto!important;bottom:auto!important;
+  transition:box-shadow .3s ease,background .3s ease!important;will-change:transform;touch-action:manipulation}

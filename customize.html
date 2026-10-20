@@ -1,0 +1,47 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Request a one-of-a-kind handmade sketch from ABC — browse our work and tell us what you have in mind."><link rel="canonical" href="https://beltyx.vercel.app/customize.html"><link rel="manifest" href="manifest.webmanifest"><title>Customize Sketches — BELTYX</title><link rel="stylesheet" href="style.css?v=30260927abc"><script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="cloud.js"></script><script src="whatsapp.js"></script><script src="storefront.js?v=20261019-cny-jpy-zoomfix"></script><link rel="stylesheet" href="motion.css?v=3"><script src="motion.js?v=3" defer></script></head><body><header class="site-header"><a class="brand" href="index.html"><img src="assets/beltyx-logo.svg" alt="BELTYX"><span><strong>BELTYX</strong><small>LEATHER GOODS</small></span></a><nav class="site-nav" id="siteNav"><a href="index.html">Home</a><a href="shop.html">Shop</a><a href="collections.html">Collections</a><a href="customize.html">Customize</a><a href="about.html">Our Story</a><a href="reviews.html">Reviews</a><a href="contact.html">Contact</a></nav><div class="header-actions"><a class="icon-button bag-button" href="cart.html">Bag <span data-cart-count>0</span></a><button class="icon-button menu-toggle" id="menuToggle">☰</button></div></header>
+
+<main>
+<section class="sketch-hero">
+  <p class="eyebrow">MADE JUST FOR YOU</p>
+  <h1>Customize Sketches.</h1>
+  <p>Every sketch is drawn by hand, from scratch, around what you ask for — a portrait, a pet, a place, a product, anything you can describe. Browse a few examples below, then tell us what you have in mind and we'll bring it to life.</p>
+  <div class="sketch-cta">
+    <button class="btn btn-light" id="requestSketchBtn" type="button">Request a custom sketch →</button>
+  </div>
+</section>
+
+<section class="section" style="padding-top:10px">
+  <div class="sketch-gallery" id="sketchGallery">
+    <p class="sketch-empty">Loading sketches…</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="sketch-steps">
+    <div><b>01</b><p>Browse our handmade work above, or tell us your own idea from scratch.</p></div>
+    <div><b>02</b><p>Tap "Request a custom sketch" — your message is copied and our WhatsApp group opens.</p></div>
+    <div><b>03</b><p>Paste it in, send, and share any reference photos. We'll confirm details, price and timeline with you directly.</p></div>
+  </div>
+</section>
+</main>
+
+<a class="whatsapp-float" data-whatsapp href="https://wa.me/923174960570" aria-label="WhatsApp enquiry">WhatsApp enquiry ↗</a>
+
+<footer class="footer"><div class="footer-grid"><div><div class="footer-brand">BELTYX</div><p>Leather, Made to Last.</p></div><div><h4>Explore</h4><a href="shop.html">Shop</a><a href="collections.html">Collections</a></div><div><h4>Help</h4><a href="reviews.html">Reviews</a><a href="contact.html">Contact</a></div><div><h4>Contact</h4><a data-whatsapp href="https://wa.me/923174960570">WhatsApp</a></div></div><div class="footer-bottom"><span>© <span data-year></span> BELTYX</span></div></footer>
+
+<script>
+function renderSketchGallery(){
+  const el=document.getElementById('sketchGallery');
+  const items=(window.ABC&&BELTYX.SKETCHES)?BELTYX.SKETCHES():[];
+  if(!items.length){el.innerHTML='<p class="sketch-empty">Our sketch gallery is being updated — check back soon, or send us your idea right away using the button above.</p>';return}
+  el.innerHTML=items.map(s=>`<figure><img loading="lazy" src="${BELTYX.esc(s.url)}" alt="Handmade ABC sketch"></figure>`).join('');
+}
+document.addEventListener('beltyx-ready', renderSketchGallery);
+
+document.getElementById('requestSketchBtn').addEventListener('click', async ()=>{
+  const msg='Hi ABC, I would like to request a custom handmade sketch. Here is what I have in mind: ';
+  const number='923174960570';
+  window.open('https://wa.me/'+number+'/?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
+});
+</script>
+</body></html>

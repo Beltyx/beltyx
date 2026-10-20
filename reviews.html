@@ -1,0 +1,53 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Customer reviews and feedback for BELTYX leather goods."><link rel="canonical" href="https://beltyx.vercel.app/reviews.html"><link rel="manifest" href="manifest.webmanifest"><title>Reviews — BELTYX</title><link rel="stylesheet" href="style.css?v=30260927abc"><script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="cloud.js"></script><script src="whatsapp.js"></script><script src="storefront.js?v=20261019-cny-jpy-zoomfix"></script><link rel="stylesheet" href="motion.css?v=3"><script src="motion.js?v=3" defer></script></head><body><header class="site-header"><a class="brand" href="index.html"><img src="assets/beltyx-logo.svg" alt="BELTYX"><span><strong>BELTYX</strong><small>LEATHER GOODS</small></span></a><nav class="site-nav" id="siteNav"><a href="index.html">Home</a><a href="shop.html">Shop</a><a href="collections.html">Collections</a><a href="customize.html">Customize</a><a href="about.html">Our Story</a><a href="reviews.html">Reviews</a><a href="contact.html">Contact</a></nav><div class="header-actions"><a class="icon-button bag-button" href="cart.html">Bag <span data-cart-count>0</span></a><button class="icon-button menu-toggle" id="menuToggle">☰</button></div></header><main><section class="page-hero"><div><p class="eyebrow">CUSTOMER VOICES</p><h1>What people noticed.</h1><p>Approved feedback from the BELTYX community. New reviews are moderated before publication.</p></div></section>
+<section class="section review-submit-section"><div class="review-submit-wrap"><aside class="checkout-panel review-form-panel"><div><p class="eyebrow">SHARE YOUR EXPERIENCE</p><h2>Leave a review</h2><p>Placed an order with BELTYX? Tell us how it went — the product, the site and your overall experience. Every review is checked before it goes live.</p></div><form id="reviewForm" class="order-form" novalidate><label>Your name *<input name="customer_name" autocomplete="name" required maxlength="60" placeholder="e.g. Sarah Khan"></label><label>Product name (optional)<input name="product_name" maxlength="120" placeholder="e.g. Heritage Messenger Bag"></label><div class="wide rating-block"><span>Overall rating *</span><div class="star-input" data-field="overall_rating" role="radiogroup" aria-label="Overall rating"><button type="button" data-star="1" aria-label="1 star">★</button><button type="button" data-star="2" aria-label="2 stars">★</button><button type="button" data-star="3" aria-label="3 stars">★</button><button type="button" data-star="4" aria-label="4 stars">★</button><button type="button" data-star="5" aria-label="5 stars">★</button></div></div><label class="wide">Overall review *<textarea name="overall_review" required minlength="2" maxlength="500" rows="3" placeholder="How was your overall experience with BELTYX?"></textarea></label><div class="wide rating-block"><span>Website experience *</span><div class="star-input" data-field="website_rating" role="radiogroup" aria-label="Website rating"><button type="button" data-star="1" aria-label="1 star">★</button><button type="button" data-star="2" aria-label="2 stars">★</button><button type="button" data-star="3" aria-label="3 stars">★</button><button type="button" data-star="4" aria-label="4 stars">★</button><button type="button" data-star="5" aria-label="5 stars">★</button></div></div><label class="wide">Website review *<textarea name="website_review" required minlength="2" maxlength="500" rows="3" placeholder="How was browsing and ordering on the site?"></textarea></label><div class="wide rating-block"><span>Product rating *</span><div class="star-input" data-field="product_rating" role="radiogroup" aria-label="Product rating"><button type="button" data-star="1" aria-label="1 star">★</button><button type="button" data-star="2" aria-label="2 stars">★</button><button type="button" data-star="3" aria-label="3 stars">★</button><button type="button" data-star="4" aria-label="4 stars">★</button><button type="button" data-star="5" aria-label="5 stars">★</button></div></div><label class="wide">Product review *<textarea name="product_review" required minlength="2" maxlength="1000" rows="3" placeholder="What did you think of the product itself?"></textarea></label><div class="form-error wide" id="reviewFormError" role="alert"></div><button class="btn btn-light wide" type="submit" id="reviewSubmitBtn">Submit review</button></form></aside></div></section>
+<section class="section"><div class="review-grid" id="reviewGrid"></div><div class="empty" id="reviewEmpty" style="display:none">Reviews will appear here as customers share their experience.</div></section></main><footer class="footer"><div class="footer-grid"><div><div class="footer-brand">BELTYX</div><p>Leather, Made to Last.</p></div><div><h4>Explore</h4><a href="shop.html">Shop</a><a href="collections.html">Collections</a></div><div><h4>Help</h4><a href="about.html">Our Story</a><a href="contact.html">Contact</a></div><div><h4>Contact</h4><a data-whatsapp href="https://wa.me/923174960570">WhatsApp</a></div></div><div class="footer-bottom"><span>© <span data-year></span> BELTYX</span></div></footer><script>
+function setupReviewForm(){
+  const form=document.getElementById('reviewForm');
+  if(!form||form.dataset.bound)return;
+  form.dataset.bound='1';
+  const err=document.getElementById('reviewFormError');
+  const showErr=m=>{err.textContent=m;err.classList.add('show')};
+  form.querySelectorAll('.star-input').forEach(box=>{
+    box.dataset.value='0';
+    box.querySelectorAll('button').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        box.dataset.value=btn.dataset.star;
+        box.querySelectorAll('button').forEach(b=>b.classList.toggle('active',Number(b.dataset.star)<=Number(btn.dataset.star)));
+      });
+    });
+  });
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    err.classList.remove('show');err.textContent='';
+    const db=window.ABC_DB;
+    const btn=document.getElementById('reviewSubmitBtn');
+    const fd=new FormData(form);
+    const customer_name=String(fd.get('customer_name')||'').trim();
+    const product_name=String(fd.get('product_name')||'').trim();
+    const overall_review=String(fd.get('overall_review')||'').trim();
+    const website_review=String(fd.get('website_review')||'').trim();
+    const product_review=String(fd.get('product_review')||'').trim();
+    const overall_rating=Number(form.querySelector('[data-field="overall_rating"]').dataset.value||0);
+    const website_rating=Number(form.querySelector('[data-field="website_rating"]').dataset.value||0);
+    const product_rating=Number(form.querySelector('[data-field="product_rating"]').dataset.value||0);
+    if(!customer_name)return showErr('Please enter your name.');
+    if(!overall_rating||!website_rating||!product_rating)return showErr('Please give a star rating in every section.');
+    if(overall_review.length<2||website_review.length<2||product_review.length<2)return showErr('Please add a short comment in every review section.');
+    if(!db)return showErr('Reviews are unavailable right now. Please try again later.');
+    btn.disabled=true;const original=btn.textContent;btn.textContent='Submitting…';
+    const{error}=await db.from('reviews').insert({customer_name,product_name:product_name||null,overall_rating,overall_review,website_rating,website_review,product_rating,product_review});
+    btn.disabled=false;btn.textContent=original;
+    if(error)return showErr(error.message||'Could not submit your review. Please try again.');
+    form.reset();
+    form.querySelectorAll('.star-input').forEach(box=>{box.dataset.value='0';box.querySelectorAll('button').forEach(b=>b.classList.remove('active'))});
+    BELTYX.toast('Thank you! Your review has been submitted for approval.');
+  });
+}
+document.addEventListener('beltyx-ready',async()=>{
+  setupReviewForm();
+  const db=window.ABC_DB;const grid=document.getElementById('reviewGrid'),empty=document.getElementById('reviewEmpty');if(!db){empty.style.display='block';return}
+  const r=await db.from('reviews').select('*').eq('approved',true).order('created_at',{ascending:false}).limit(18);
+  if(r.error||!r.data?.length){empty.style.display='block';return}
+  grid.innerHTML=r.data.map(x=>`<article class="review-card"><div class="stars">${'★'.repeat(Number(x.overall_rating||x.rating||0))}${'☆'.repeat(5-Number(x.overall_rating||x.rating||0))}</div><p>"${BELTYX.esc(x.overall_review||x.review_text||'')}"</p><strong>${BELTYX.esc(x.customer_name||'Customer')}</strong><small>Verified BELTYX feedback</small></article>`).join('')
+});
+</script></body></html>
